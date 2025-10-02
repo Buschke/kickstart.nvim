@@ -901,25 +901,59 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
+  --  { -- You can easily change to a different colorscheme.
+  --    -- Change the name of the colorscheme plugin below, and then
+  --    -- change the command in the config to whatever the name of that colorscheme is.
+  --    --
+  --    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --    'folke/tokyonight.nvim',
+  --    priority = 1000, -- Make sure to load this before all the other start plugins.
+  --    config = function()
+  --      ---@diagnostic disable-next-line: missing-fields
+  --      require('tokyonight').setup {
+  --        styles = {
+  --          comments = { italic = false }, -- Disable italics in comments
+  --        },
+  --      }
+  --
+  --      -- Load the colorscheme here.
+  --      -- Like many other themes, this one has different styles, and you could load
+  --      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --      vim.cmd.colorscheme 'tokyonight-day'
+  --    end,
+  --  },
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-day'
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    lazy = false,
+    priority = 1000,
+    opts = {
+      flavour = 'latte',
+      background = {
+        light = 'latte',
+        dark = 'mocha',
+      },
+      transparent_background = true,
+      show_end_of_buffer = false,
+      float = {
+        transparent = true,
+        solid = true,
+      },
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = true,
+        telescope = true,
+        notify = false,
+        mini = false,
+      },
+    },
+    config = function(_, opts)
+      require('catppuccin').setup(opts)
+      vim.cmd.colorscheme 'catppuccin'
+      vim.o.background = 'light'
+      vim.o.termguicolors = true
     end,
   },
 
@@ -988,6 +1022,36 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
+  --NOTE: Added by Sven
+  {
+    'Pocco81/auto-save.nvim',
+    opts = {
+      debounce_delay = 500, -- Delay (ms) before saving again
+    },
+    keys = {
+      { '<leader>uv', '<cmd>ASToggle<CR>', desc = 'Toggle Autosave' },
+    },
+    lazy = false,
+  },
+  {
+    'jiaoshijie/undotree',
+    dpendencies = 'nvim-lua/plenary.nvim',
+    config = function()
+      require('undotree').setup {
+        float_diff = true,
+        layout = 'left_bottom',
+        position = 'left',
+        keymaps = {
+          ['j'] = 'move_next',
+          ['k'] = 'move_prev',
+          ['<cr>'] = 'action_enter',
+          ['q'] = 'quit',
+        },
+      }
+      vim.keymap.set('n', '<leader>u', require('undotree').toggle, { noremap = true, silent = false })
+    end,
+    keys = { { '<leader>u', "<cmd>lua require('undotree').toggle()<cr>" } },
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -998,6 +1062,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
+
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
